@@ -1,0 +1,72 @@
+---
+title: "Homework 5 Decomposition"
+author: "Aolong Zhang"
+date: "2023-10-26"
+output: html_document
+---
+
+```{r}
+library(readxl)
+Tesla_sales <- read_excel("C:/Users/17215/OneDrive/Desktop/Tesla sales.xlsx")
+View(Tesla_sales)
+
+class(Tesla_sales)
+
+## convert dataset to time series
+data1 = ts(Tesla_sales$`Total Sales`, start = c(2015),end = c(2023,6),
+           frequency = 12)
+
+library(fpp)
+library(fpp2)
+
+plot(data1)
+data1
+
+## acf
+Acf(data1)
+
+# Takes 2 Arguments
+stl_decomp <- stl(data1,s.window ="periodic")
+
+# Table View
+stl_decomp
+
+# Graph View
+plot(stl_decomp)
+
+
+# attributes
+attributes(stl_decomp)
+
+
+# seasonal adjustment
+seasadj(stl_decomp)
+plot(data1)
+lines(seasadj(stl_decomp), col="Red")
+
+
+# forecasting
+f_stl <- forecast(stl_decomp,h=15)
+plot(f_stl)
+
+
+# redisuals
+Acf(f_stl$residuals)
+
+
+#plot
+
+plot(f_stl)
+lines(seasadj(stl_decomp), col="Red")
+lines(f_stl$fitted,col="green")
+
+# other decompose function
+decomp_elec=decompose(data1)
+plot(decomp_elec)
+seasadj(decomp_elec)
+
+
+
+
+```
+
